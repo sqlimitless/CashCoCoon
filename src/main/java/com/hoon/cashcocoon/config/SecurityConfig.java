@@ -21,7 +21,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .requestMatchers(PathRequest.toH2Console());
     }
 
     @Bean
@@ -32,9 +33,10 @@ public class SecurityConfig {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
+                .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable);
         return http.build();
 
