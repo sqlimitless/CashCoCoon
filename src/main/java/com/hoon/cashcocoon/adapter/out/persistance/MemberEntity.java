@@ -1,5 +1,6 @@
 package com.hoon.cashcocoon.adapter.out.persistance;
 
+import com.hoon.cashcocoon.domain.PasswordConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,9 @@ public class MemberEntity implements UserDetails {
 
     @Column(name = "email")
     private String email;
+
     @Column(name = "password")
+    @Convert(converter = PasswordConverter.class)
     private String password;
 
     @Override

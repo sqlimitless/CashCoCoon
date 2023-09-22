@@ -20,6 +20,7 @@ public class MemberController {
     public ResponseEntity<String> registerMember(@RequestBody LoginRequest loginRequest) {
         System.out.println("MemberController.registerUser");
         System.out.println("loginRequest = " + loginRequest);
+        memberPortIn.registerMember(loginRequest);
         return ResponseEntity.ok(null);
     }
 }
