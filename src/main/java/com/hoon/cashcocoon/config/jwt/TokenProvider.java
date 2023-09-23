@@ -1,6 +1,5 @@
 package com.hoon.cashcocoon.config.jwt;
 
-import com.hoon.cashcocoon.application.service.MemberService;
 import com.hoon.cashcocoon.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -19,14 +18,15 @@ import java.util.Date;
 @Slf4j
 public class TokenProvider {
 
-    private static final long ACCESS_TOKEN_VALID_PERIOD = 1_000L * 60 * 60 * 24; // 1일
+    @Value("${jwt.period}")
+    private long ACCESS_TOKEN_VALID_PERIOD;
     private final Key jwtSecretKey;
-    private final MemberService memberDetailService;
+    private final UserDetailsServiceImpl UserDetailsService;
 
-    public TokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberService memberService) {
+    public TokenProvider(@Value("${jwt.secret-key}") String secretKey, UserDetailsServiceImpl UserDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.jwtSecretKey = Keys.hmacShaKeyFor(keyBytes);
-        this.memberDetailService = memberService;
+        this.UserDetailsService = UserDetailsService;
     }
 
     public TokenResponse generateJWT(final Member member) {
@@ -72,7 +72,7 @@ public class TokenProvider {
         Claims claims = parseClaims(token);
 
         final String email = claims.get("email").toString();
-        final UserDetails member = memberDetailService.loadUserByUsername(email);
+        final UserDetails member = UserDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(member, email, member.getAuthorities());
     }
 }
