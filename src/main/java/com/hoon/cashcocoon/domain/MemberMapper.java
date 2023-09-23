@@ -12,4 +12,11 @@ public class MemberMapper {
                 .password(member.getPassword())
                 .build();
     }
+
+    public static Member toDomain(MemberEntity memberEntity) {
+        return Member.builder()
+                .email(memberEntity.getEmail())
+                .password(memberEntity.getPassword())
+                .build();
+    }
 }

@@ -1,7 +1,7 @@
 package com.hoon.cashcocoon.config;
 
-import com.hoon.cashcocoon.application.service.MemberService;
 import com.hoon.cashcocoon.config.jwt.JwtFilter;
+import com.hoon.cashcocoon.config.jwt.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-    private final MemberService memberService;
+    private final UserDetailsServiceImpl userDetailsService;
     private static final String[] PERMIT_ALL_PATTERNS = new String[]{"/api/members/**"};
 
     @Bean
@@ -44,12 +44,12 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
-                                authorizeRequests
-                                        .requestMatchers(Stream
-                                                .of(PERMIT_ALL_PATTERNS)
-                                                .map(AntPathRequestMatcher::antMatcher)
-                                                .toArray(AntPathRequestMatcher[]::new)).permitAll()
-                                        .anyRequest().authenticated()
+                        authorizeRequests
+                                .requestMatchers(Stream
+                                        .of(PERMIT_ALL_PATTERNS)
+                                        .map(AntPathRequestMatcher::antMatcher)
+                                        .toArray(AntPathRequestMatcher[]::new)).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable);
@@ -60,7 +60,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 
-        daoAuthenticationProvider.setUserDetailsService(memberService);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
 
         return daoAuthenticationProvider;

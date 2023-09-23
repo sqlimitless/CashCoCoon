@@ -19,3 +19,4 @@ logging:
 
 jwt:
   secret-key: LeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJLeeHJ
+  period: 86_400_000
