@@ -8,5 +8,5 @@ public interface MemberPortIn {
 
     Member loginMember(MemberRequest memberRequest);
 
-    Member resetPassword(MemberRequest memberRequest);
+    void resetPassword(MemberRequest memberRequest);
 }

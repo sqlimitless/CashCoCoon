@@ -1,6 +1,6 @@
 package com.hoon.cashcocoon.config.jwt;
 
-import com.hoon.cashcocoon.adapter.out.MemberEntityRepository;
+import com.hoon.cashcocoon.adapter.out.persistance.MemberEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

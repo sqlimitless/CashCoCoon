@@ -26,6 +26,9 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRequest memberRequest) {
         try {
+            if (!memberRequest.checkEmailPattern()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email pattern.");
+            }
             if (!memberRequest.checkPasswordPattern()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password pattern.");
             }
@@ -42,7 +45,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginMember(@RequestBody MemberRequest memberRequest) {
-        try{
+        try {
             Member member = memberPortIn.loginMember(memberRequest);
             return ResponseEntity.ok(tokenProvider.generateJWT(member));
         } catch (IllegalArgumentException e) {
@@ -55,8 +58,8 @@ public class MemberController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<MemberResponse> resetPassword(@RequestBody MemberRequest memberRequest) {
-        Member member = memberPortIn.resetPassword(memberRequest);
-        return ResponseEntity.ok(MemberResponse.fromEntity(member));
+    public ResponseEntity<?> resetPassword(@RequestBody MemberRequest memberRequest) {
+        memberPortIn.resetPassword(memberRequest);
+        return ResponseEntity.ok(null);
     }
 }

@@ -1,6 +1,5 @@
-package com.hoon.cashcocoon.adapter.out;
+package com.hoon.cashcocoon.adapter.out.persistance;
 
-import com.hoon.cashcocoon.adapter.out.persistance.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,12 +1,17 @@
 package com.hoon.cashcocoon.adapter.out.persistance;
 
 import com.hoon.cashcocoon.domain.PasswordConverter;
+import com.hoon.cashcocoon.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Table(name = "member")
 @Getter
@@ -27,9 +32,18 @@ public class MemberEntity implements UserDetails {
     @Convert(converter = PasswordConverter.class)
     private String password;
 
-    @Override
+    @Column(name = "name")
+    private String name;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "member_roles", joinColumns = @JoinColumn(name = "member_idx"))
+    private Set<Role> roles = new HashSet<>();
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -55,5 +69,9 @@ public class MemberEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public void updatePassword(String newPass){
+        this.password = newPass;
     }
 }
