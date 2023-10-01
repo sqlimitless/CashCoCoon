@@ -1,16 +1,13 @@
-package com.hoon.cashcocoon.adapter.out.persistance;
+package com.hoon.cashcocoon.domain.member;
 
-import com.hoon.cashcocoon.domain.PasswordConverter;
-import com.hoon.cashcocoon.domain.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Table(name = "member")
@@ -19,13 +16,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class MemberEntity implements UserDetails {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idx;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "password")
@@ -71,7 +69,30 @@ public class MemberEntity implements UserDetails {
         return false;
     }
 
-    public void updatePassword(String newPass){
-        this.password = newPass;
+    public void updatePassword(){
+        final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String LOWER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+        final String NUMBERS = "0123456789";
+        final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?/";
+        final String ALL_CHARACTERS = UPPER_CASE_LETTERS + LOWER_CASE_LETTERS + NUMBERS + SPECIAL_CHARACTERS;
+
+        Random random = new Random();
+        List<Character> password = Arrays.asList(
+                UPPER_CASE_LETTERS.charAt(random.nextInt(UPPER_CASE_LETTERS.length())),
+                LOWER_CASE_LETTERS.charAt(random.nextInt(LOWER_CASE_LETTERS.length())),
+                NUMBERS.charAt(random.nextInt(NUMBERS.length())),
+                SPECIAL_CHARACTERS.charAt(random.nextInt(SPECIAL_CHARACTERS.length()))
+        );
+
+        for (int i = 4; i < 8; i++) {
+            password.add(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));
+        }
+
+        Collections.shuffle(password);
+        StringBuilder passwordStr = new StringBuilder();
+        for (char c : password) {
+            passwordStr.append(c);
+        }
+        this.password = passwordStr.toString();
     }
 }

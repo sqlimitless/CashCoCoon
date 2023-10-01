@@ -1,6 +1,6 @@
 package com.hoon.cashcocoon.config.jwt;
 
-import com.hoon.cashcocoon.domain.Member;
+import com.hoon.cashcocoon.application.dto.MemberDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,13 +29,13 @@ public class TokenProvider {
         this.UserDetailsService = UserDetailsService;
     }
 
-    public TokenResponse generateJWT(final Member member) {
+    public TokenResponse generateJWT(final MemberDto memberDto) {
         final Date now = new Date();
         final Date accessTokenExpireIn = new Date(now.getTime() + ACCESS_TOKEN_VALID_PERIOD);
 
         final String accessToken = Jwts.builder()
                 .setSubject("authorization")
-                .claim("email", member.getEmail())
+                .claim("email", memberDto.getEmail())
                 .setExpiration(accessTokenExpireIn)
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();

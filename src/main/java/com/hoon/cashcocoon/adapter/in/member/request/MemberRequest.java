@@ -1,6 +1,6 @@
-package com.hoon.cashcocoon.adapter.in.request;
+package com.hoon.cashcocoon.adapter.in.member.request;
 
-import com.hoon.cashcocoon.domain.Role;
+import com.hoon.cashcocoon.domain.member.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

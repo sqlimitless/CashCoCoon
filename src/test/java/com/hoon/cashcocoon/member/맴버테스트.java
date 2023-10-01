@@ -1,6 +1,6 @@
 package com.hoon.cashcocoon.member;
 
-import com.hoon.cashcocoon.adapter.in.request.MemberRequest;
+import com.hoon.cashcocoon.adapter.in.member.request.MemberRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

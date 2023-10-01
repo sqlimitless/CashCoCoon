@@ -1,86 +1,59 @@
 package com.hoon.cashcocoon.application.service;
 
-import com.hoon.cashcocoon.adapter.in.request.MemberRequest;
-import com.hoon.cashcocoon.adapter.out.persistance.MemberEntityRepository;
-import com.hoon.cashcocoon.adapter.out.persistance.MemberEntity;
-import com.hoon.cashcocoon.application.port.in.MemberPortIn;
+import com.hoon.cashcocoon.application.dto.MemberDto;
+import com.hoon.cashcocoon.adapter.in.member.request.MemberRequest;
+import com.hoon.cashcocoon.adapter.out.persistance.JpaMemberRepository;
+import com.hoon.cashcocoon.application.mapper.MemberMapper;
+import com.hoon.cashcocoon.domain.member.Member;
+import com.hoon.cashcocoon.application.port.in.MemberUseCase;
 import com.hoon.cashcocoon.application.port.out.PasswordResetPortOut;
-import com.hoon.cashcocoon.domain.Member;
-import com.hoon.cashcocoon.domain.MemberMapper;
-import com.hoon.cashcocoon.domain.Role;
+import com.hoon.cashcocoon.domain.member.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService implements MemberPortIn {
+public class MemberService implements MemberUseCase {
 
-    private final MemberEntityRepository memberEntityRepository;
+    private final JpaMemberRepository memberEntityRepository;
     private final PasswordResetPortOut passwordResetPortOut;
 
     @Override
     @Transactional
-    public Member registerMember(MemberRequest memberRequest) {
+    public MemberDto registerMember(MemberRequest memberRequest) {
         if (memberEntityRepository.existsByEmail(memberRequest.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
-        Member member = Member.builder()
+        MemberDto memberDto = MemberDto.builder()
                 .email(memberRequest.getEmail())
                 .password(memberRequest.getPassword())
                 .name(memberRequest.getName())
-                .role(Role.USER)
+                .roles(Set.of(Role.USER))
                 .build();
-        MemberEntity memberEntity = MemberMapper.toEntity(member);
-        MemberEntity saved = memberEntityRepository.save(memberEntity);
-        return MemberMapper.toDomain(saved);
+        Member memberEntity = MemberMapper.toEntity(memberDto);
+        Member saved = memberEntityRepository.save(memberEntity);
+        return MemberMapper.toDto(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Member loginMember(MemberRequest memberRequest) {
-        MemberEntity member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
+    public MemberDto loginMember(MemberRequest memberRequest) {
+        Member member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
         if (!new BCryptPasswordEncoder().matches(memberRequest.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("None Email.");
         }
-        return MemberMapper.toDomain(member);
+        return MemberMapper.toDto(member);
     }
 
     @Override
     @Transactional
     public void resetPassword(MemberRequest memberRequest) {
-        MemberEntity member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
-
-        final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        final String LOWER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
-        final String NUMBERS = "0123456789";
-        final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?/";
-        final String ALL_CHARACTERS = UPPER_CASE_LETTERS + LOWER_CASE_LETTERS + NUMBERS + SPECIAL_CHARACTERS;
-
-        Random random = new Random();
-        List<Character> password = Arrays.asList(
-                UPPER_CASE_LETTERS.charAt(random.nextInt(UPPER_CASE_LETTERS.length())),
-                LOWER_CASE_LETTERS.charAt(random.nextInt(LOWER_CASE_LETTERS.length())),
-                NUMBERS.charAt(random.nextInt(NUMBERS.length())),
-                SPECIAL_CHARACTERS.charAt(random.nextInt(SPECIAL_CHARACTERS.length()))
-        );
-
-        for (int i = 4; i < 8; i++) {
-            password.add(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));
-        }
-
-        Collections.shuffle(password);
-        StringBuilder passwordStr = new StringBuilder();
-        for (char c : password) {
-            passwordStr.append(c);
-        }
-        member.updatePassword(passwordStr.toString());
-        passwordResetPortOut.passwordReset(member.getEmail(), passwordStr.toString());
+        Member member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
+        member.updatePassword();
+        passwordResetPortOut.passwordReset(member);
     }
 }

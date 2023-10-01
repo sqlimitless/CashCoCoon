@@ -1,4 +1,4 @@
-package com.hoon.cashcocoon.domain;
+package com.hoon.cashcocoon.domain.member;
 
 import org.springframework.security.core.GrantedAuthority;
 

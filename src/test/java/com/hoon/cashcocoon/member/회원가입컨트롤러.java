@@ -1,6 +1,6 @@
 package com.hoon.cashcocoon.member;
 
-import com.hoon.cashcocoon.adapter.in.web.MemberController;
+import com.hoon.cashcocoon.adapter.in.member.web.MemberController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

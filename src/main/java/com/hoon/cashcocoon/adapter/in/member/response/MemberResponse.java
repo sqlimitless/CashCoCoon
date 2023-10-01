@@ -1,6 +1,6 @@
-package com.hoon.cashcocoon.adapter.in.response;
+package com.hoon.cashcocoon.adapter.in.member.response;
 
-import com.hoon.cashcocoon.domain.Member;
+import com.hoon.cashcocoon.application.dto.MemberDto;
 import lombok.*;
 
 @Data
@@ -10,9 +10,9 @@ import lombok.*;
 public class MemberResponse {
     private String email;
 
-    public static MemberResponse fromEntity(Member member) {
+    public static MemberResponse fromEntity(MemberDto memberDto) {
         return MemberResponse.builder()
-                .email(member.getEmail())
+                .email(memberDto.getEmail())
                 .build();
     }
 }

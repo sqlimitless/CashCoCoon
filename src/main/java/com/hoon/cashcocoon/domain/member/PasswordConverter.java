@@ -1,4 +1,4 @@
-package com.hoon.cashcocoon.domain;
+package com.hoon.cashcocoon.domain.member;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
