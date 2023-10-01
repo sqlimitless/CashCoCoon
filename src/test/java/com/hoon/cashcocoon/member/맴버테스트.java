@@ -16,4 +16,15 @@ public class 맴버테스트 {
         memberRequest.setPassword("1234qwer!@#$QWER");
         assertTrue(memberRequest.checkPasswordPattern());
     }
+
+    @Test
+    void 이메일체크(){
+        MemberRequest memberRequest = new MemberRequest();
+        memberRequest.setEmail("lhjhoon@gmail.com");
+        assertTrue(memberRequest.checkEmailPattern());
+        memberRequest.setEmail("lhjhoongmail.com");
+        assertFalse(memberRequest.checkEmailPattern());
+        memberRequest.setEmail("lhjhoon@gmail");
+        assertFalse(memberRequest.checkEmailPattern());
+    }
 }
