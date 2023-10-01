@@ -6,21 +6,24 @@ import com.hoon.cashcocoon.adapter.out.persistance.JpaMemberRepository;
 import com.hoon.cashcocoon.application.mapper.MemberMapper;
 import com.hoon.cashcocoon.domain.member.Member;
 import com.hoon.cashcocoon.application.port.in.MemberUseCase;
-import com.hoon.cashcocoon.application.port.out.PasswordResetPortOut;
+import com.hoon.cashcocoon.domain.member.event.PasswordChangedEvent;
 import com.hoon.cashcocoon.domain.member.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService implements MemberUseCase {
 
     private final JpaMemberRepository memberEntityRepository;
-    private final PasswordResetPortOut passwordResetPortOut;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -54,6 +57,10 @@ public class MemberService implements MemberUseCase {
     public void resetPassword(MemberRequest memberRequest) {
         Member member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
         member.updatePassword();
-        passwordResetPortOut.passwordReset(member);
+        PasswordChangedEvent changedEvent = PasswordChangedEvent.builder()
+                .toAddress(memberRequest.getEmail())
+                .newPassword(member.getPassword())
+                .build();
+        eventPublisher.publishEvent(changedEvent);
     }
 }

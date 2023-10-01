@@ -10,6 +10,7 @@ public class MemberMapper {
                 .idx(memberDto.getIdx())
                 .email(memberDto.getEmail())
                 .name(memberDto.getName())
+                .password(memberDto.getPassword())
                 .build();
     }
 
@@ -18,6 +19,7 @@ public class MemberMapper {
                 .idx(member.getIdx())
                 .email(member.getEmail())
                 .name(member.getName())
+                .password(member.getPassword())
                 .build();
     }
 }

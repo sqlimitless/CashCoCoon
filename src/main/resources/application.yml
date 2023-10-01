@@ -11,6 +11,30 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: your-email@gmail.com
+#    password: your-password
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lhjhoon@gmail.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 50000
+          starttls:
+            enable: true
+        debug: true
 logging:
   level:
     org.hibernate.SQL: debug

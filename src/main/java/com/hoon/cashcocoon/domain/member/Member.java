@@ -77,12 +77,14 @@ public class Member implements UserDetails {
         final String ALL_CHARACTERS = UPPER_CASE_LETTERS + LOWER_CASE_LETTERS + NUMBERS + SPECIAL_CHARACTERS;
 
         Random random = new Random();
-        List<Character> password = Arrays.asList(
+
+        List<Character> characterList = Arrays.asList(
                 UPPER_CASE_LETTERS.charAt(random.nextInt(UPPER_CASE_LETTERS.length())),
                 LOWER_CASE_LETTERS.charAt(random.nextInt(LOWER_CASE_LETTERS.length())),
                 NUMBERS.charAt(random.nextInt(NUMBERS.length())),
                 SPECIAL_CHARACTERS.charAt(random.nextInt(SPECIAL_CHARACTERS.length()))
         );
+        List<Character> password = new ArrayList<>(characterList);
 
         for (int i = 4; i < 8; i++) {
             password.add(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));

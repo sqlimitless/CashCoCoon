@@ -26,12 +26,12 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRequest memberRequest) {
         try {
-            if (!memberRequest.checkEmailPattern()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email pattern.");
-            }
-            if (!memberRequest.checkPasswordPattern()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password pattern.");
-            }
+//            if (!memberRequest.checkEmailPattern()) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email pattern.");
+//            }
+//            if (!memberRequest.checkPasswordPattern()) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password pattern.");
+//            }
             MemberDto member = memberUseCase.registerMember(memberRequest);
             return ResponseEntity.ok(MemberResponse.fromEntity(member));
         } catch (IllegalArgumentException e) {
