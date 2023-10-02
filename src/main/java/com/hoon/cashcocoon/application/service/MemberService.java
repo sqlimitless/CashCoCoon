@@ -1,13 +1,15 @@
 package com.hoon.cashcocoon.application.service;
 
-import com.hoon.cashcocoon.application.dto.MemberDto;
-import com.hoon.cashcocoon.adapter.in.member.request.MemberRequest;
+import com.hoon.cashcocoon.adapter.in.member.request.ChangePasswordRequest;
+import com.hoon.cashcocoon.adapter.in.member.request.LoginRequest;
+import com.hoon.cashcocoon.adapter.in.member.request.RegisterRequest;
+import com.hoon.cashcocoon.adapter.in.member.request.ResetRequest;
 import com.hoon.cashcocoon.adapter.out.persistance.JpaMemberRepository;
-import com.hoon.cashcocoon.application.mapper.MemberMapper;
-import com.hoon.cashcocoon.domain.member.Member;
+import com.hoon.cashcocoon.application.dto.MemberDto;
 import com.hoon.cashcocoon.application.port.in.MemberUseCase;
-import com.hoon.cashcocoon.domain.member.event.PasswordChangedEvent;
+import com.hoon.cashcocoon.domain.member.Member;
 import com.hoon.cashcocoon.domain.member.Role;
+import com.hoon.cashcocoon.domain.member.event.PasswordResetEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,40 +29,49 @@ public class MemberService implements MemberUseCase {
 
     @Override
     @Transactional
-    public MemberDto registerMember(MemberRequest memberRequest) {
-        if (memberEntityRepository.existsByEmail(memberRequest.getEmail())) {
+    public MemberDto registerMember(RegisterRequest registerRequest) {
+        if (memberEntityRepository.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
         MemberDto memberDto = MemberDto.builder()
-                .email(memberRequest.getEmail())
-                .password(memberRequest.getPassword())
-                .name(memberRequest.getName())
+                .email(registerRequest.getEmail())
+                .password(registerRequest.getPassword())
+                .name(registerRequest.getName())
                 .roles(Set.of(Role.USER))
                 .build();
-        Member memberEntity = MemberMapper.toEntity(memberDto);
+        Member memberEntity = memberDto.toEntity();
         Member saved = memberEntityRepository.save(memberEntity);
-        return MemberMapper.toDto(saved);
+        return MemberDto.of(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MemberDto loginMember(MemberRequest memberRequest) {
-        Member member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
-        if (!new BCryptPasswordEncoder().matches(memberRequest.getPassword(), member.getPassword())) {
+    public MemberDto loginMember(LoginRequest loginRequest) {
+        Member member = memberEntityRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + loginRequest.getEmail()));
+        if (!new BCryptPasswordEncoder().matches(loginRequest.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("None Email.");
         }
-        return MemberMapper.toDto(member);
+        return MemberDto.of(member);
     }
 
     @Override
     @Transactional
-    public void resetPassword(MemberRequest memberRequest) {
-        Member member = memberEntityRepository.findByEmail(memberRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + memberRequest.getEmail()));
-        member.updatePassword();
-        PasswordChangedEvent changedEvent = PasswordChangedEvent.builder()
-                .toAddress(memberRequest.getEmail())
+    public MemberDto resetPassword(ResetRequest resetRequest) {
+        Member member = memberEntityRepository.findByEmail(resetRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + resetRequest.getEmail()));
+        member.resetPassword();
+        PasswordResetEvent changedEvent = PasswordResetEvent.builder()
+                .toAddress(resetRequest.getEmail())
                 .newPassword(member.getPassword())
                 .build();
         eventPublisher.publishEvent(changedEvent);
+        return MemberDto.of(member);
+    }
+
+    @Override
+    @Transactional
+    public MemberDto changePassword(Long idx, ChangePasswordRequest changePasswordRequest) throws IllegalArgumentException{
+        Member member = memberEntityRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("None idx" + idx));
+        member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getNewPassword());
+        return MemberDto.of(member);
     }
 }

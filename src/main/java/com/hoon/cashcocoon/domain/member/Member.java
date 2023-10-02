@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,11 +70,11 @@ public class Member implements UserDetails {
         return false;
     }
 
-    public void updatePassword(){
+    public void resetPassword() {
         final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final String LOWER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
         final String NUMBERS = "0123456789";
-        final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?/";
+        final String SPECIAL_CHARACTERS = "!@#$%^&*()_+";
         final String ALL_CHARACTERS = UPPER_CASE_LETTERS + LOWER_CASE_LETTERS + NUMBERS + SPECIAL_CHARACTERS;
 
         Random random = new Random();
@@ -96,5 +97,12 @@ public class Member implements UserDetails {
             passwordStr.append(c);
         }
         this.password = passwordStr.toString();
+    }
+    public void changePassword(String password, String newPassword) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (!bCryptPasswordEncoder.matches(password,this.password)) {
+            throw new IllegalArgumentException("not Equals password");
+        }
+        this.password = newPassword;
     }
 }

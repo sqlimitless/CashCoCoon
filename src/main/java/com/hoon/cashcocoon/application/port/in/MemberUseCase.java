@@ -1,12 +1,14 @@
 package com.hoon.cashcocoon.application.port.in;
 
+import com.hoon.cashcocoon.adapter.in.member.request.*;
 import com.hoon.cashcocoon.application.dto.MemberDto;
-import com.hoon.cashcocoon.adapter.in.member.request.MemberRequest;
 
 public interface MemberUseCase {
-    MemberDto registerMember(MemberRequest memberRequest);
+    MemberDto registerMember(RegisterRequest registerRequest);
 
-    MemberDto loginMember(MemberRequest memberRequest);
+    MemberDto loginMember(LoginRequest loginRequest);
 
-    void resetPassword(MemberRequest memberRequest);
+    MemberDto resetPassword(ResetRequest memberRequest);
+
+    MemberDto changePassword(Long idx, ChangePasswordRequest changePasswordRequest);
 }

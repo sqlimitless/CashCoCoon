@@ -10,7 +10,7 @@ import lombok.*;
 public class MemberResponse {
     private String email;
 
-    public static MemberResponse fromEntity(MemberDto memberDto) {
+    public static MemberResponse of(MemberDto memberDto) {
         return MemberResponse.builder()
                 .email(memberDto.getEmail())
                 .build();

@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class PasswordChangedEvent {
+public class PasswordResetEvent {
     private String toAddress;
     private String newPassword;
 }
