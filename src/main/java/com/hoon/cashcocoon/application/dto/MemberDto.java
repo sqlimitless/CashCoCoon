@@ -23,6 +23,7 @@ public class MemberDto {
                 .email(this.getEmail())
                 .name(this.getName())
                 .password(this.getPassword())
+                .roles(this.getRoles())
                 .build();
     }
 

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -64,16 +66,23 @@ public class MemberController {
     }
 
     @PatchMapping("/{idx}/new-password")
-    public ResponseEntity<?> changePassword(@PathVariable("idx")Long idx, @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<?> changePassword(@PathVariable("idx") Long idx, @RequestBody ChangePasswordRequest changePasswordRequest) {
         if (!changePasswordRequest.checkPasswordPattern()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid newPassword pattern.");
         }
         MemberDto memberDto;
-        try{
+        try {
             memberDto = memberUseCase.changePassword(idx, changePasswordRequest);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return ResponseEntity.ok(MemberResponse.of(memberDto));
+    }
+
+    @GetMapping("/")
+    public void test(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authentication.getDetails() = " + authentication.getDetails());
+        System.out.println("authentication.getPrincipal() = " + authentication.getPrincipal());
     }
 }

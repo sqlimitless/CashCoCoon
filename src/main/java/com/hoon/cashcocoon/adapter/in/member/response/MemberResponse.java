@@ -8,10 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class MemberResponse {
+    private long idx;
     private String email;
 
     public static MemberResponse of(MemberDto memberDto) {
         return MemberResponse.builder()
+                .idx(memberDto.getIdx())
                 .email(memberDto.getEmail())
                 .build();
     }

@@ -1,6 +1,7 @@
 package com.hoon.cashcocoon.config.jwt;
 
 import com.hoon.cashcocoon.application.dto.MemberDto;
+import com.hoon.cashcocoon.domain.member.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -8,11 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -32,10 +36,11 @@ public class TokenProvider {
     public TokenResponse generateJWT(final MemberDto memberDto) {
         final Date now = new Date();
         final Date accessTokenExpireIn = new Date(now.getTime() + ACCESS_TOKEN_VALID_PERIOD);
-
         final String accessToken = Jwts.builder()
                 .setSubject("authorization")
+                .claim("idx", memberDto.getIdx())
                 .claim("email", memberDto.getEmail())
+                .claim("roles", memberDto.getRoles())
                 .setExpiration(accessTokenExpireIn)
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();
@@ -70,9 +75,11 @@ public class TokenProvider {
 
     public Authentication getAuthentication(final String token) {
         Claims claims = parseClaims(token);
-
+        List<String> roleStrings = (List<String>) claims.get("roles");
+        List<SimpleGrantedAuthority> authorities = roleStrings.stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
         final String email = claims.get("email").toString();
-        final UserDetails member = UserDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(member, email, member.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(email, null, authorities);
     }
 }
