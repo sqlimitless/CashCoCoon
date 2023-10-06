@@ -1,4 +1,4 @@
-package com.hoon.cashcocoon.application.service.event;
+package com.hoon.cashcocoon.application.service.member.event;
 
 import com.hoon.cashcocoon.domain.member.event.PasswordResetEvent;
 import jakarta.mail.MessagingException;

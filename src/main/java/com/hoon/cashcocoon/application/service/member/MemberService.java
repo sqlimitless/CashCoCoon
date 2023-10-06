@@ -1,4 +1,4 @@
-package com.hoon.cashcocoon.application.service;
+package com.hoon.cashcocoon.application.service.member;
 
 import com.hoon.cashcocoon.adapter.in.member.request.ChangePasswordRequest;
 import com.hoon.cashcocoon.adapter.in.member.request.LoginRequest;

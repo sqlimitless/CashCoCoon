@@ -4,7 +4,7 @@ import com.hoon.cashcocoon.adapter.in.member.request.ChangePasswordRequest;
 import com.hoon.cashcocoon.adapter.in.member.request.RegisterRequest;
 import com.hoon.cashcocoon.adapter.out.persistance.JpaMemberRepository;
 import com.hoon.cashcocoon.application.dto.MemberDto;
-import com.hoon.cashcocoon.application.service.MemberService;
+import com.hoon.cashcocoon.application.service.member.MemberService;
 import com.hoon.cashcocoon.domain.member.Member;
 import com.hoon.cashcocoon.domain.member.PasswordConverter;
 import org.junit.jupiter.api.Test;
