@@ -1,6 +1,7 @@
 package com.hoon.cashcocoon.config.jwt;
 
 import com.hoon.cashcocoon.application.dto.MemberDto;
+import com.hoon.cashcocoon.domain.member.Member;
 import com.hoon.cashcocoon.domain.member.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -79,7 +81,10 @@ public class TokenProvider {
         List<SimpleGrantedAuthority> authorities = roleStrings.stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
-        final String email = claims.get("email").toString();
-        return new UsernamePasswordAuthenticationToken(email, null, authorities);
+        final MemberDto member = MemberDto.builder()
+                .idx((Long) claims.get("email"))
+                .email(claims.get("idx").toString())
+                .build();
+        return new UsernamePasswordAuthenticationToken(member, null, authorities);
     }
 }

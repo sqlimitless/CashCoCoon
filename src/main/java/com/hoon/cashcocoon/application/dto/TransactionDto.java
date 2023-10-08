@@ -1,6 +1,5 @@
 package com.hoon.cashcocoon.application.dto;
 
-import com.hoon.cashcocoon.domain.member.Member;
 import com.hoon.cashcocoon.domain.transactions.EntryType;
 import com.hoon.cashcocoon.domain.transactions.Money;
 import com.hoon.cashcocoon.domain.transactions.Transaction;
