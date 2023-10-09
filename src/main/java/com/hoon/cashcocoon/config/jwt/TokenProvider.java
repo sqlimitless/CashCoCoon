@@ -82,8 +82,8 @@ public class TokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
         final MemberDto member = MemberDto.builder()
-                .idx((Long) claims.get("email"))
-                .email(claims.get("idx").toString())
+                .idx(Long.parseLong(claims.get("idx").toString()))
+                .email(claims.get("email").toString())
                 .build();
         return new UsernamePasswordAuthenticationToken(member, null, authorities);
     }

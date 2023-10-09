@@ -1,10 +1,13 @@
 package com.hoon.cashcocoon.adapter.in.transaction.web;
 
 import com.hoon.cashcocoon.adapter.in.transaction.request.CreateTransactionRequest;
+import com.hoon.cashcocoon.application.dto.MemberDto;
 import com.hoon.cashcocoon.application.port.in.TransactionUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +26,9 @@ public class TransactionController {
 
     @GetMapping("")
     public ResponseEntity<?> getTransactions() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        MemberDto memberDto = (MemberDto) authentication.getPrincipal();
+        transactionUseCase.getTransactions(memberDto.getIdx());
         return null;
     }
 

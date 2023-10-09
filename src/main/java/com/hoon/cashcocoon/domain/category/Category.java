@@ -1,35 +1,28 @@
-package com.hoon.cashcocoon.domain.transactions;
+package com.hoon.cashcocoon.domain.category;
 
 import com.hoon.cashcocoon.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-@Table(name = "transaction")
+@Table(name = "category")
 @Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Transaction extends BaseEntity {
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idx;
 
-    @NotNull
     private long memberIdx;
 
-    private long categoryIdx;
-
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private LocalDateTime date;
+    private EntryType entryType;
 
-    @Embedded
-    @NotNull
-    private Money amount;
+    private String name;
 
-    private String memo;
 }

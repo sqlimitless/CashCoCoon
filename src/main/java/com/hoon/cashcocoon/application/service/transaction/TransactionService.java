@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +18,24 @@ public class TransactionService implements TransactionUseCase {
 
     private final JpaTransactionRepository jpaTransactionRepository;
     @Override
+    @Transactional
     public void createTransaction(CreateTransactionRequest createTransactionRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MemberDto memberDto = (MemberDto) authentication.getPrincipal();
         TransactionDto transactionDto = TransactionDto.builder()
                 .amount(new Money(createTransactionRequest.getAmount()))
                 .date(createTransactionRequest.getDate())
-                .entryType(createTransactionRequest.getEntryType())
                 .memo(createTransactionRequest.getMemo())
-//                .categoryIdx()    TODO 카테고리 생성이후에 다시 작업해야함.
+                .categoryIdx(createTransactionRequest.getCategoryIdx())
                 .memberIdx(memberDto.getIdx())
                 .build();
         jpaTransactionRepository.save(transactionDto.toEntity());
+    }
+
+    @Override
+    @Transactional
+    public TransactionDto getTransactions(long idx) {
+        System.out.println("idx = " + idx);
+        return null;
     }
 }

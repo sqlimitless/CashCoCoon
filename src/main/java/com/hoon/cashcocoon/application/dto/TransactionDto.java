@@ -1,6 +1,5 @@
 package com.hoon.cashcocoon.application.dto;
 
-import com.hoon.cashcocoon.domain.transactions.EntryType;
 import com.hoon.cashcocoon.domain.transactions.Money;
 import com.hoon.cashcocoon.domain.transactions.Transaction;
 import lombok.Builder;
@@ -17,7 +16,6 @@ public class TransactionDto {
     private long categoryIdx;
     private LocalDateTime date;
     private Money amount;
-    private EntryType entryType;
     private String memo;
 
     public Transaction toEntity() {
@@ -26,7 +24,6 @@ public class TransactionDto {
                 .memberIdx(this.getMemberIdx())
                 .categoryIdx(this.getCategoryIdx())
                 .date(this.getDate())
-                .entryType(this.getEntryType())
                 .memo(this.getMemo())
                 .build();
     }
@@ -37,7 +34,6 @@ public class TransactionDto {
                 .memberIdx(transaction.getMemberIdx())
                 .categoryIdx(transaction.getCategoryIdx())
                 .date(transaction.getDate())
-                .entryType(transaction.getEntryType())
                 .memo(transaction.getMemo())
                 .build();
     }

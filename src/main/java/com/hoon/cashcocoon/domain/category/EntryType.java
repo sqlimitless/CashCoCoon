@@ -1,4 +1,4 @@
-package com.hoon.cashcocoon.domain.transactions;
+package com.hoon.cashcocoon.domain.category;
 
 public enum EntryType {
     INCOME,
