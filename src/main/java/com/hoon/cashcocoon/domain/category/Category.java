@@ -25,4 +25,9 @@ public class Category extends BaseEntity {
 
     private String name;
 
+    public Category updateCategory(EntryType entryType, String name) {
+        this.entryType = entryType;
+        this.name = name;
+        return this;
+    }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +44,18 @@ public class CategoryService implements CategoryUseCase {
     @Override
     @Transactional
     public CategoryDto updateCategory(long idx, UpdateCategoryRequest updateCategoryRequest) {
-        Category category = jpaCategoryRepository.findById(idx).orElse(null);
+        Category category = jpaCategoryRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("없는 Idx"));
+        Category updated = category.updateCategory(updateCategoryRequest.getEntryType(), updateCategoryRequest.getName());
+        return CategoryDto.of(updated);
+    }
 
-        return null;
+    @Override
+    @Transactional
+    public void deleteCategory(long memberIdx, long idx) {
+        Category category = jpaCategoryRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("없는 Idx"));
+        if (category.getMemberIdx() != memberIdx){
+            throw new IllegalArgumentException("지울수 있는 자격이 없음.");
+        }
+        jpaCategoryRepository.delete(category);
     }
 }

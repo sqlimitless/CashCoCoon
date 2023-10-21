@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Table(name = "transaction")
 @Getter
@@ -25,11 +25,19 @@ public class Transaction extends BaseEntity {
     private long categoryIdx;
 
     @NotNull
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Embedded
     @NotNull
     private Money amount;
 
     private String memo;
+
+    public Transaction updateTransaction(long categoryIdx, LocalDate date, Money amount, String memo) {
+        this.categoryIdx = categoryIdx;
+        this.date = date;
+        this.amount = amount;
+        this.memo = memo;
+        return this;
+    }
 }

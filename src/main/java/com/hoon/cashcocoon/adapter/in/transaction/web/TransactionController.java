@@ -1,6 +1,7 @@
 package com.hoon.cashcocoon.adapter.in.transaction.web;
 
 import com.hoon.cashcocoon.adapter.in.transaction.request.CreateTransactionRequest;
+import com.hoon.cashcocoon.adapter.in.transaction.request.UpdateTransactionRequest;
 import com.hoon.cashcocoon.application.dto.MemberDto;
 import com.hoon.cashcocoon.application.dto.TransactionDto;
 import com.hoon.cashcocoon.application.port.in.TransactionUseCase;
@@ -41,13 +42,15 @@ public class TransactionController {
         return ResponseEntity.ok(transactionDetail);
     }
 
-    @PatchMapping("/{idx}")
-    public ResponseEntity<?> updateTransactionDetail(@PathVariable long idx) {
-        return null;
+    @PutMapping("/{idx}")
+    public ResponseEntity<?> updateTransaction(@PathVariable long idx, @RequestBody UpdateTransactionRequest updateTransactionRequest) {
+        TransactionDto updated = transactionUseCase.updateTransaction(idx, updateTransactionRequest);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{idx}")
-    public ResponseEntity<?> deleteTransactionDetail(@PathVariable long idx) {
-        return null;
+    public ResponseEntity<?> deleteTransaction(@PathVariable long idx) {
+        transactionUseCase.deleteTransaction(idx);
+        return ResponseEntity.ok(null);
     }
 }

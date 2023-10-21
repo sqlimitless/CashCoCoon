@@ -5,7 +5,7 @@ import com.hoon.cashcocoon.domain.transactions.Transaction;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -14,7 +14,7 @@ public class TransactionDto {
     private long idx;
     private long memberIdx;
     private long categoryIdx;
-    private LocalDateTime date;
+    private LocalDate date;
     private Money amount;
     private String memo;
 

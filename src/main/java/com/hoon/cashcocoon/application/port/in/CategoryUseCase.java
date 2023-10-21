@@ -12,4 +12,6 @@ public interface CategoryUseCase {
     List<CategoryDto> getCategories(long memberIdx);
 
     CategoryDto updateCategory(long idx, UpdateCategoryRequest updateCategoryRequest);
+
+    void deleteCategory(long memberIdx, long idx);
 }

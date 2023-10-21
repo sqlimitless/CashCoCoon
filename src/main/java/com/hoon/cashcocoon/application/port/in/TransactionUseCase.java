@@ -1,6 +1,7 @@
 package com.hoon.cashcocoon.application.port.in;
 
 import com.hoon.cashcocoon.adapter.in.transaction.request.CreateTransactionRequest;
+import com.hoon.cashcocoon.adapter.in.transaction.request.UpdateTransactionRequest;
 import com.hoon.cashcocoon.application.dto.TransactionDto;
 
 import java.util.List;
@@ -11,4 +12,8 @@ public interface TransactionUseCase {
     List<TransactionDto> getTransactions(long idx);
 
     TransactionDto getTransactionDetail(long idx);
+
+    TransactionDto updateTransaction(long idx, UpdateTransactionRequest updateTransactionRequest);
+
+    void deleteTransaction(long idx);
 }

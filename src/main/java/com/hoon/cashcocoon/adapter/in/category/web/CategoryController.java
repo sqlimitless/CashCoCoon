@@ -36,9 +36,17 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDtos);
     }
 
-    @PatchMapping("/{idx}")
+    @PutMapping("/{idx}")
     public ResponseEntity<?> updateCategory(@PathVariable("idx") long idx, @RequestBody UpdateCategoryRequest updateCategoryRequest) {
         CategoryDto updated = categoryUseCase.updateCategory(idx, updateCategoryRequest);
         return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{idx}")
+    public ResponseEntity<?> deleteCategory(@PathVariable("idx") long idx) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        MemberDto memberDto = (MemberDto) authentication.getPrincipal();
+        categoryUseCase.deleteCategory(memberDto.getIdx(), idx);
+        return ResponseEntity.ok(null);
     }
 }
