@@ -6,11 +6,15 @@ import com.hoon.cashcocoon.application.dto.MemberDto;
 import com.hoon.cashcocoon.application.dto.TransactionDto;
 import com.hoon.cashcocoon.application.port.in.TransactionUseCase;
 import com.hoon.cashcocoon.domain.transactions.Money;
+import com.hoon.cashcocoon.domain.transactions.Transaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +23,7 @@ public class TransactionService implements TransactionUseCase {
     private final JpaTransactionRepository jpaTransactionRepository;
     @Override
     @Transactional
-    public void createTransaction(CreateTransactionRequest createTransactionRequest) {
+    public TransactionDto createTransaction(CreateTransactionRequest createTransactionRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MemberDto memberDto = (MemberDto) authentication.getPrincipal();
         TransactionDto transactionDto = TransactionDto.builder()
@@ -29,13 +33,20 @@ public class TransactionService implements TransactionUseCase {
                 .categoryIdx(createTransactionRequest.getCategoryIdx())
                 .memberIdx(memberDto.getIdx())
                 .build();
-        jpaTransactionRepository.save(transactionDto.toEntity());
+        Transaction saved = jpaTransactionRepository.save(transactionDto.toEntity());
+        return TransactionDto.of(saved);
     }
 
     @Override
     @Transactional
-    public TransactionDto getTransactions(long idx) {
-        System.out.println("idx = " + idx);
-        return null;
+    public List<TransactionDto> getTransactions(long idx) {
+        List<Transaction> transactions = jpaTransactionRepository.findByMemberId(idx);
+        return transactions.stream().map(TransactionDto::of).toList();
+    }
+
+    @Override
+    public TransactionDto getTransactionDetail(long idx) {
+        Transaction transaction = jpaTransactionRepository.findById(idx).orElse(null);
+        return TransactionDto.of(transaction);
     }
 }

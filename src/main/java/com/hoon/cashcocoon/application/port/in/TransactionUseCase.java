@@ -3,8 +3,12 @@ package com.hoon.cashcocoon.application.port.in;
 import com.hoon.cashcocoon.adapter.in.transaction.request.CreateTransactionRequest;
 import com.hoon.cashcocoon.application.dto.TransactionDto;
 
-public interface TransactionUseCase {
-    void createTransaction(CreateTransactionRequest createTransactionRequest);
+import java.util.List;
 
-    TransactionDto getTransactions(long idx);
+public interface TransactionUseCase {
+    TransactionDto createTransaction(CreateTransactionRequest createTransactionRequest);
+
+    List<TransactionDto> getTransactions(long idx);
+
+    TransactionDto getTransactionDetail(long idx);
 }
