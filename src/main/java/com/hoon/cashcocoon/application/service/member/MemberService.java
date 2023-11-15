@@ -47,9 +47,9 @@ public class MemberService implements MemberUseCase {
     @Override
     @Transactional(readOnly = true)
     public MemberDto loginMember(LoginRequest loginRequest) {
-        Member member = memberEntityRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("None Email" + loginRequest.getEmail()));
+        Member member = memberEntityRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("email"));
         if (!new BCryptPasswordEncoder().matches(loginRequest.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("None Email.");
+            throw new IllegalArgumentException("password");
         }
         return MemberDto.of(member);
     }

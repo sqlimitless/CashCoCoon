@@ -8,9 +8,12 @@ import com.hoon.cashcocoon.adapter.in.member.response.MemberResponse;
 import com.hoon.cashcocoon.application.dto.MemberDto;
 import com.hoon.cashcocoon.application.port.in.MemberUseCase;
 import com.hoon.cashcocoon.config.jwt.TokenProvider;
+import com.hoon.cashcocoon.config.jwt.TokenResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,15 +49,23 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
         try {
             MemberDto member = memberUseCase.loginMember(loginRequest);
+            TokenResponse tokenResponse = tokenProvider.generateJWT(member);
+            ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", tokenResponse.getAccessToken())
+                    .path("/")
+                    .secure(true)
+                    .sameSite("None")
+                    .build();
+            httpServletResponse.setHeader("Set-Cookie", accessTokenCookie.toString());
+
             return ResponseEntity.ok(tokenProvider.generateJWT(member));
         } catch (IllegalArgumentException e) {
             log.error("Invalid argument: ", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            log.error("Registration failed: ", e);
+            log.error("Failed: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed.");
         }
     }
