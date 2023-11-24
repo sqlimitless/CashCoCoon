@@ -52,14 +52,6 @@ public class MemberController {
     public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
         try {
             MemberDto member = memberUseCase.loginMember(loginRequest);
-            TokenResponse tokenResponse = tokenProvider.generateJWT(member);
-            ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", tokenResponse.getAccessToken())
-                    .path("/")
-                    .secure(true)
-                    .sameSite("None")
-                    .build();
-            httpServletResponse.setHeader("Set-Cookie", accessTokenCookie.toString());
-
             return ResponseEntity.ok(tokenProvider.generateJWT(member));
         } catch (IllegalArgumentException e) {
             log.error("Invalid argument: ", e);

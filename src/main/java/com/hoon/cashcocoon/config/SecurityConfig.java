@@ -54,7 +54,7 @@ public class SecurityConfig {
                                         .toArray(AntPathRequestMatcher[]::new)).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }

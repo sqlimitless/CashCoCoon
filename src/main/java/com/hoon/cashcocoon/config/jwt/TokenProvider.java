@@ -42,6 +42,7 @@ public class TokenProvider {
                 .setSubject("authorization")
                 .claim("idx", memberDto.getIdx())
                 .claim("email", memberDto.getEmail())
+                .claim("name", memberDto.getName())
                 .claim("roles", memberDto.getRoles())
                 .setExpiration(accessTokenExpireIn)
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
@@ -84,6 +85,7 @@ public class TokenProvider {
         final MemberDto member = MemberDto.builder()
                 .idx(Long.parseLong(claims.get("idx").toString()))
                 .email(claims.get("email").toString())
+                .name(claims.get("name").toString())
                 .build();
         return new UsernamePasswordAuthenticationToken(member, null, authorities);
     }
